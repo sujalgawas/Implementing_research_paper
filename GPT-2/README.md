@@ -191,12 +191,24 @@ The model architecture faithfully implements the 12-layer decoder structure with
 
 ## Training and Temperature-Controlled Generation
 
-### Training Setup
+### Training Setup & Model Checkpoints
 
 - **Dataset**: OpenWebText ([`Skylion007/openwebtext`](https://huggingface.co/datasets/Skylion007/openwebtext))
 - **Optimizer**: `AdamW` ($\text{lr} = 3 \times 10^{-4}$, $\beta_1 = 0.9$, $\beta_2 = 0.95$, $\text{weight\_decay} = 0.1$)
 - **Gradient Clipping**: `clip_grad_norm_(max_norm=1.0)`
 - **Loss Function**: `CrossEntropyLoss(ignore_index=-100)`
+- **Model Checkpoints**: Model weights and checkpoints are hosted on Hugging Face: [sujalgawas/gpt2-from-scratch-checkpoints](https://huggingface.co/sujalgawas/gpt2-from-scratch-checkpoints)
+
+### Training Execution & Loss Progress
+
+The model was trained on an NVIDIA T4 GPU (15 GB VRAM) for 45 hours completing 1 epoch. The training time and dataset scale were significantly reduced compared to the original GPT-2 paper due to memory limits (15 GB VRAM ceiling) and data constraints.
+
+- **Initial Validation Loss**: 10.88
+- **Final Epoch 1 Loss**:
+  ```text
+  === Epoch 1 done | Train loss 4.4881 | Val loss 4.3982 ===
+  ```
+During the single epoch training run, the validation loss dropped from **10.88** down to **4.3982**.
 
 ### Autoregressive Text Generation with Temperature Scaling
 
@@ -245,6 +257,14 @@ def generate(prompt, max_new_tokens=100, temperature=1.0, top_k=50, eos_token="<
     return tokenizer.decode(generated_ids)
 
 # Generation example
-output = generate("Once upon a time", max_new_tokens=100, temperature=0.8, top_k=50)
+output = generate("I was happy ", max_new_tokens=100, temperature=0.8, top_k=50)
 print(output)
 ```
+
+### Sample Generation Output
+
+**Input Prompt:** `"I was happy "`  
+**Generation Parameters:** `max_new_tokens=100`, `temperature=0.8`, `top_k=50`
+
+**Output:**
+> "I was happy iced by the idea of a project with one of the best design options. My favorite brand is the kind of product I’ve used to offer and is a great product and I’m not sure how to make it. I decided to be a friend in my head that I still have the same experience and the ability to build a product and some of my product. I wanted to make something that was perfect because I wanted to make something that was great with the product."
