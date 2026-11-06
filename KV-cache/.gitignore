@@ -1,0 +1,4 @@
+gpt2_config/
+gpt2_weights.pth
+.venv/
+__pycache__/
